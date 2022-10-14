@@ -76,8 +76,13 @@ def test_push_swap(test_id):
 
     output = [el.decode('utf-8') for el in output.splitlines(False)]
     
-    test_set
-    return (exit_code == 0, len(output), end - start, )
+    tester_process = Popen(["./checker_linux"] + test_set, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+    (tester_output, _) = tester_process.communicate(str.encode("\n".join(output) + "\n"))
+    tester_process.wait()
+    
+    success = b"OK" in tester_output
+
+    return (success, len(output), end - start, )
 
 if __name__ == "__main__":
     if len(sys.argv) != 6:
